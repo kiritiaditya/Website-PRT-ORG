@@ -3,10 +3,12 @@ kind: Service
 metadata:
   name: my-service
 spec:
-  type: NodePort
+  type: NodePort  # Allows external access via NodePort
   selector:
-    app.kubernetes.io/name: apache
+    app: apache  # Must match Deployment's Pod label
   ports:
     - protocol: TCP
-      port: 80
-      nodePort: 30010
+      port: 80     # Service port (internal cluster IP)
+      targetPort: 80  # Must match containerPort in Deployment
+      nodePort: 30010  # Optional: External port (30000-32767)
+
