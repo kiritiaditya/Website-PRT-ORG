@@ -3,7 +3,7 @@ pipeline {
         DOCKERHUB_CREDENTIALS = credentials("docker")
     }
     agent {
-        label ''
+        label 'k-m'
     }
     stages {
         stage('Git') {
@@ -11,19 +11,20 @@ pipeline {
                 git url: 'https://github.com/kiritiaditya/Website-PRT-ORG.git', branch: 'main'
             }
          }         
-stage('Docker') {
-        stage('Docker') {
-            steps {
-                withCredentials([usernamePassword(credentialsId: 'docker', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
-                    sh '''
-                        echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
-                        docker build -t kiritiaditya/prt-task .
-                        docker push kiritiaditya/prt-task
-                    '''
-                }
-            }
-        }
-    }
+         stage('Docker') {
+             steps {
+                 sh 'sudo docker login -u $(DOCKERHUB_CREDENTIALS_USR) -p $(DOCKERHUB_CREDENTIALS_PSW)'
+                 sh 'sudo docker build /home/ubuntu/jenkins/workspace/job1/ -t kiriti/prt-task'
+                 sh 'sudo docker push kiritiaditya/prt-task'
+             }
+         } 
+         stage('K8s') {
+             steps {
+                 sh 'kubectl apply -f deploy.yaml'
+                 sh 'kubectl apply -f service.yaml'
+             }
+         }
+     } 
 }
 
          stage('K8s') {
