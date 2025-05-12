@@ -13,7 +13,7 @@ pipeline {
          }         
          stage('Docker') {
              steps {
-                 sh 'sudo docker login -u $(DOCKERHUB_CREDENTIALS_USR) -p $(DOCKERHUB_CREDENTIALS_PSW)'
+                 sh 'sudo echo $DOCKERHUB_CREDENTIALS_PSW | sudo docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
                  sh 'sudo docker build /home/ubuntu/jenkins/workspace/job1/ -t kiritiaditya/prt-task'
                  sh 'sudo docker push kiritiaditya/prt-task'
              }
